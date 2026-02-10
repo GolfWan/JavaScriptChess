@@ -1,0 +1,13 @@
+#chessBoard {
+    display: grid;
+    grid-template-rows: 60px 60px 60px 60px 60px 60px 60px 60px;
+    grid-template-columns: 60px 60px 60px 60px 60px 60px 60px 60px;
+}
+
+.square-light {
+    background-color: #fff;
+}
+
+.square-dark {
+    background-color: #000;
+}
