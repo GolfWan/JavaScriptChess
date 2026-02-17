@@ -9,6 +9,9 @@ export class Game {
     constructor() {
         this.board = new Board()
         this.initializeBoard();
+        this.currentPlayer = 'white';
+        this.selectedPiece = null;
+        this.selectedPosition = null;
     }
 
     initializeBoard() {
@@ -51,5 +54,17 @@ export class Game {
                 this.board.setSquare(7, x, kingBlack);
             }
         }
+    }
+    switchPlayer() {
+        if (this.currentPlayer == "white") {
+            this.currentPlayer = "black";
+        } else if (this.currentPlayer == "black") {
+            this.currentPlayer = "white";
+        }
+    }
+    movePiece(fromRow, fromCol, toRow, toCol) {
+        let movingPiece = this.board.getSquare(fromRow, fromCol);
+        this.board.setSquare(toRow, toCol, movingPiece);
+        this.board.setSquare(fromRow, fromCol, null);
     }
 }

@@ -2,6 +2,7 @@ const symbols = {
     white: { pawn: '♙', rook: '♖', knight: '♘', bishop: '♗', queen: '♕', king: '♔' },
     black: { pawn: '♟', rook: '♜', knight: '♞', bishop: '♝', queen: '♛', king: '♚' }
 };
+
 export class BoardView {
     constructor(boardDiv) {
         this.boardDiv = boardDiv;
@@ -27,4 +28,5 @@ export class BoardView {
         }
 
     }
+
 }
