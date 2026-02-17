@@ -1,11 +1,12 @@
 import { BoardView } from '../views/BoardView.js';
-import { Board } from '../models/Board.js';
+import { Game } from '../models/Game.js';
+
 let frontendBoard = document.getElementById('chessBoard');
 export class GameController {
     constructor() {
         this.boardView = new BoardView(frontendBoard);
-        this.board = new Board();
-        this.boardView.render(this.board);
+        this.game = new Game();
+        this.boardView.render(this.game.board);
     }
 }
 const gamecontroller = new GameController();

@@ -1,7 +1,7 @@
 import { Piece } from './Piece.js';
-export class Pawn extends Piece {
+export class Queen extends Piece {
     constructor(color) {
-        super("pawn", color);
+        super("queen", color);
     }
 
 }
