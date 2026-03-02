@@ -13,10 +13,10 @@ Dieses Projekt ist Teil meiner Bewerbungsunterlagen und demonstriert meine Fähi
 ## Installation & Start
 ```bash
 # Repository klonen
-git clone https://github.com/DEIN-USERNAME/DEIN-REPO-NAME.git
+git clone https://github.com/GolfWan/JavaScriptChess.git
 
 # Projekt öffnen
-cd DEIN-REPO-NAME
+cd JavaScriptChess
 
 # Mit Live Server starten (empfohlen)
 # - VS Code: Live Server Extension installieren
