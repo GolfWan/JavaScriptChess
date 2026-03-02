@@ -7,7 +7,7 @@ export class BoardView {
     constructor(boardDiv) {
         this.boardDiv = boardDiv;
     }
-    render(board) {
+    render(board) { 
         this.boardDiv.innerHTML = '';
         for (let x = 7; x >= 0; x--) {
             for (let y = 0; y <= 7; y++) {

@@ -30,3 +30,7 @@
 .square-dark {
     background-color: #baca44;
 }
+
+.selected {
+    background-color: #888888;
+}

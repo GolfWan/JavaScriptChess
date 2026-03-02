@@ -4,8 +4,8 @@ import { Game } from '../models/Game.js';
 let frontendBoard = document.getElementById('chessBoard');
 export class GameController {
     constructor() {
-        this.boardView = new BoardView(frontendBoard);
         this.game = new Game();
+        this.boardView = new BoardView(frontendBoard);
         this.boardView.render(this.game.board);
         this.addEventListener();
     }
@@ -37,7 +37,11 @@ export class GameController {
             square.addEventListener('click', () => {
                 let row = parseInt(square.dataset.row);
                 let col = parseInt(square.dataset.col);
+                document.querySelectorAll(".square").forEach(s => s.classList.remove("selected"));
                 this.handleClick(row, col);
+                if (this.game.selectedPiece != null) {
+                    square.classList.add("selected");
+                }
             })
         });
     }
