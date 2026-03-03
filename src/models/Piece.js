@@ -5,4 +5,8 @@ export class Piece {
         this.row = row;
         this.col = col;
     }
+
+    getValidMoves(board){
+        return [];
+    }
 }

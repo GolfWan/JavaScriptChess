@@ -16,6 +16,7 @@ export class GameController {
                 this.game.selectedPiece = this.game.board.getSquare(row, col);
             }
         } else {
+            let validMovesArray = this.game.selectedPiece.getValidMoves(this.game.board);
             if (this.game.selectedPiece == this.game.board.getSquare(row, col)) {
                 this.game.selectedPosition = null;
                 this.game.selectedPiece = null;
@@ -23,12 +24,14 @@ export class GameController {
                 this.game.selectedPosition = { row, col };
                 this.game.selectedPiece = this.game.board.getSquare(row, col);
             } else {
-                this.game.movePiece(this.game.selectedPosition.row, this.game.selectedPosition.col, row, col);
-                this.game.switchPlayer();
-                this.game.selectedPiece = null;
-                this.game.selectedPosition = null;
-                this.boardView.render(this.game.board);
-                this.addEventListener();
+                if (validMovesArray.some(move => move.row === row && move.col === col)) {
+                    this.game.movePiece(this.game.selectedPosition.row, this.game.selectedPosition.col, row, col);
+                    this.game.switchPlayer();
+                    this.game.selectedPiece = null;
+                    this.game.selectedPosition = null;
+                    this.boardView.render(this.game.board);
+                    this.addEventListener();
+                }
             }
         }
     }
@@ -40,7 +43,7 @@ export class GameController {
                 document.querySelectorAll(".square").forEach(s => s.classList.remove("selected"));
                 this.handleClick(row, col);
                 if (this.game.selectedPiece != null) {
-                    square.classList.add("selected");
+                    document.querySelector(`[data-row="${this.game.selectedPosition.row}"][data-col="${this.game.selectedPosition.col}"]`).classList.add("selected");
                 }
             })
         });

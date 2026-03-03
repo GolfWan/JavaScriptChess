@@ -2,6 +2,8 @@
 
 Ein vollständiges Schachspiel implementiert in Vanilla JavaScript mit objektorientierter Programmierung und MVC-Architektur.
 
+ **Live-Demo:** [Hier klicken](https://GolfWan.github.io/JavaScriptChess/)
+
 ## Über das Projekt
 
 Dieses Projekt ist Teil meiner Bewerbungsunterlagen und demonstriert meine Fähigkeiten in:

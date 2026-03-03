@@ -1,7 +1,7 @@
 import { Piece } from './Piece.js';
 export class Pawn extends Piece {
-    constructor(color) {
-        super("pawn", color);
+    constructor(color, row, col) {
+        super("pawn", color, row, col);
     }
 
 }
