@@ -37,7 +37,7 @@ python -m http.server 8000
 - [x] Spielerwechsel (Weiß/Schwarz)
 - [x] Gegnerische Figuren schlagen
 - [x] Visuelle Hervorhebung ausgewählter Figuren
-- [ ] Zugregeln für alle Figuren (in Arbeit)
+- [x] Zugregeln für alle Figuren
 - [ ] Schach-Erkennung
 - [ ] Schachmatt & Patt
 - [ ] Spezialzüge (Rochade, En Passant, Bauernumwandlung)

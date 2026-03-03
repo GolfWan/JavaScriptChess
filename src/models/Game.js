@@ -15,12 +15,12 @@ export class Game {
     }
 
     initializeBoard() {
-        //for (let x = 0; x <= 7; x++) {
-        //    let pawnWhite = new Pawn('white', 1, x);
-        //    this.board.setSquare(1, x, pawnWhite);
-        //    let pawnBlack = new Pawn('black', 6, x);
-        //    this.board.setSquare(6, x, pawnBlack);
-        //}
+        for (let x = 0; x <= 7; x++) {
+            let pawnWhite = new Pawn('white', 1, x);
+            this.board.setSquare(1, x, pawnWhite);
+            let pawnBlack = new Pawn('black', 6, x);
+            this.board.setSquare(6, x, pawnBlack);
+        }
         for (let x = 0; x <= 7; x++) {
             if (x == 0 || x == 7) {
                 let rookWhite = new Rook('white', 0, x);
