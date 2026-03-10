@@ -25,12 +25,20 @@ export class GameController {
                 this.game.selectedPiece = this.game.board.getSquare(row, col);
             } else {
                 if (validMovesArray.some(move => move.row === row && move.col === col)) {
-                    this.game.movePiece(this.game.selectedPosition.row, this.game.selectedPosition.col, row, col);
-                    this.game.switchPlayer();
-                    this.game.selectedPiece = null;
-                    this.game.selectedPosition = null;
-                    this.boardView.render(this.game.board);
-                    this.addEventListener();
+                    if (this.game.isMoveLegal(this.game.selectedPosition.row, this.game.selectedPosition.col, row, col)) {
+                        this.game.movePiece(this.game.selectedPosition.row, this.game.selectedPosition.col, row, col);
+                        this.game.switchPlayer();
+                        if (this.game.isPatt(this.game.currentPlayer)) {
+                            alert("Patt");
+                        }
+                        if (this.game.isCheckmate(this.game.currentPlayer)) {
+                            alert("Schachmatt");
+                        }
+                        this.game.selectedPiece = null;
+                        this.game.selectedPosition = null;
+                        this.boardView.render(this.game.board);
+                        this.addEventListener();
+                    }
                 }
             }
         }
@@ -49,4 +57,3 @@ export class GameController {
         });
     }
 }
-const gamecontroller = new GameController();

@@ -38,8 +38,8 @@ python -m http.server 8000
 - [x] Gegnerische Figuren schlagen
 - [x] Visuelle Hervorhebung ausgewählter Figuren
 - [x] Zugregeln für alle Figuren
-- [ ] Schach-Erkennung
-- [ ] Schachmatt & Patt
+- [x] Schach-Erkennung
+- [x] Schachmatt & Patt
 - [ ] Spezialzüge (Rochade, En Passant, Bauernumwandlung)
 
 ## Projektstruktur
@@ -50,7 +50,7 @@ chess-game/
 │   ├── views/           # UI-Rendering (BoardView, GameView)
 │   ├── controllers/     # Koordination (GameController)
 │   └── main.js          # Entry Point
-├── assets/
+├── styles/
 │   └── styles/          # CSS
 └── index.html
 ```
@@ -63,7 +63,7 @@ chess-game/
 
 ## Status
 
-**In Entwicklung** - Sprint 4 von 9
+**In Entwicklung** - Sprint 7 von 9
 
 ## Autor
 

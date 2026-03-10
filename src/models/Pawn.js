@@ -25,13 +25,13 @@ export class Pawn extends Piece {
                 }
             }
         }
-        if (this.row + direction <= 7 && this.row + direction >= 0 && this.col <= 7 && this.col >= 0) {
+        if (this.row + direction <= 7 && this.row + direction >= 0 && this.col -1 <= 7 && this.col -1 >= 0) {
             if (board.getSquare(this.row + direction, this.col - 1) != null) {
                 if (board.getSquare(this.row + direction, this.col - 1).color != board.getSquare(this.row, this.col).color) {
                     validMoves.push({ row: this.row + direction, col: this.col - 1 });
                 }
             }
-            if (this.row + direction <= 7 && this.row + direction >= 0 && this.col + 1 <= 7 && this.col - 1 >= 0) {
+            if (this.row + direction <= 7 && this.row + direction >= 0 && this.col + 1 <= 7 && this.col + 1 >= 0) {
                 if (board.getSquare(this.row + direction, this.col + 1) != null) {
                     if (board.getSquare(this.row + direction, this.col + 1).color != board.getSquare(this.row, this.col).color) {
                         validMoves.push({ row: this.row + direction, col: this.col + 1 });

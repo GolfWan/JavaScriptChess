@@ -68,4 +68,83 @@ export class Game {
         this.board.setSquare(toRow, toCol, movingPiece);
         this.board.setSquare(fromRow, fromCol, null);
     }
+    isKingInCheck(color) {
+        let currentKing;
+        for (let x = 0; x <= 7; x++) {
+            for (let y = 0; y <= 7; y++) {
+                if (this.board.getSquare(x, y) != null && this.board.getSquare(x, y).type == "king" && this.board.getSquare(x, y).color == color) {
+                    currentKing = this.board.getSquare(x, y);
+                }
+            }
+        }
+        if (!currentKing) {
+            return false;
+        }
+        for (let x = 0; x <= 7; x++) {
+            for (let y = 0; y <= 7; y++) {
+                let currentPiece = this.board.getSquare(x, y);
+                if (currentPiece != null && currentPiece.color != color) {
+                    if (currentPiece.getValidMoves(this.board).some(validMove => validMove.row == currentKing.row && validMove.col == currentKing.col)) {
+                        return true;
+                    }
+                }
+
+            }
+        }
+        return false
+    }
+    isMoveLegal(fromRow, fromCol, toRow, toCol) {
+        let piecePosition = this.board.getSquare(fromRow, fromCol);
+        let pieceTargetPosition = this.board.getSquare(toRow, toCol);
+        this.board.setSquare(toRow, toCol, piecePosition);
+        this.board.setSquare(fromRow, fromCol, null);
+        piecePosition.row = toRow
+        piecePosition.col = toCol
+        let kingCheck = this.isKingInCheck(this.currentPlayer);
+        this.board.setSquare(fromRow, fromCol, piecePosition);
+        this.board.setSquare(toRow, toCol, pieceTargetPosition);
+        piecePosition.row = fromRow
+        piecePosition.col = fromCol
+        return !kingCheck;
+    }
+
+    isCheckmate() {
+        if (!this.isKingInCheck(this.currentPlayer)) {
+            return false;
+        }
+        for (let x = 0; x <= 7; x++) {
+            for (let y = 0; y <= 7; y++) {
+                if (this.board.getSquare(x, y) != null && this.board.getSquare(x, y).color == this.currentPlayer) {
+                    let validMoves = this.board.getSquare(x, y).getValidMoves(this.board);
+                    for (let move of validMoves) {
+                        if (this.isMoveLegal(x, y, move.row, move.col)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    isPatt(color) {
+        if (this.isKingInCheck(this.currentPlayer)) {
+            return false;
+        }
+        for (let x = 0; x <= 7; x++) {
+            for (let y = 0; y <= 7; y++) {
+                if (this.board.getSquare(x, y) != null && this.board.getSquare(x, y).color == this.currentPlayer) {
+                    let validMoves = this.board.getSquare(x, y).getValidMoves(this.board);
+                    for (let move of validMoves) {
+                        if (this.isMoveLegal(x, y, move.row, move.col)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+
+
 }
