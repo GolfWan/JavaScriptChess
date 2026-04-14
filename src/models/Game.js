@@ -63,6 +63,36 @@ export class Game {
     }
     movePiece(fromRow, fromCol, toRow, toCol) {
         let movingPiece = this.board.getSquare(fromRow, fromCol);
+        if (movingPiece.type == "king" && Math.abs(fromCol - toCol) == 2) {
+            if (toCol > fromCol) {
+                this.board.setSquare(toRow, toCol, movingPiece);
+                this.board.setSquare(fromRow, fromCol, null);
+                movingPiece.col = toCol;
+                movingPiece.row = toRow;
+                let rook = this.board.getSquare(fromRow, 7);
+                this.board.setSquare(fromRow, toCol - 1, rook)
+                this.board.setSquare(fromRow, 7, null)
+                rook.col = toCol - 1;
+                rook.row = fromRow;
+                movingPiece.hasMoved = true;
+                rook.hasMoved = true;
+                return;
+            } else if (toCol < fromCol) {
+                this.board.setSquare(toRow, toCol, movingPiece);
+                this.board.setSquare(fromRow, fromCol, null);
+                movingPiece.col = toCol;
+                movingPiece.row = toRow;
+                let rook = this.board.getSquare(fromRow, 0);
+                this.board.setSquare(fromRow, toCol + 1, rook)
+                this.board.setSquare(fromRow, 0, null)
+                rook.col = toCol + 1;
+                rook.row = fromRow;
+                movingPiece.hasMoved = true;
+                rook.hasMoved = true;
+                return;
+            }
+        }
+        movingPiece.hasMoved = true;
         movingPiece.row = toRow;
         movingPiece.col = toCol;
         this.board.setSquare(toRow, toCol, movingPiece);
@@ -96,6 +126,80 @@ export class Game {
     isMoveLegal(fromRow, fromCol, toRow, toCol) {
         let piecePosition = this.board.getSquare(fromRow, fromCol);
         let pieceTargetPosition = this.board.getSquare(toRow, toCol);
+        if (piecePosition.type == "king" && fromRow == toRow && Math.abs(fromCol - toCol) == 2 && piecePosition.hasMoved == false) {
+            if (toCol > fromCol) {
+                let rook = this.board.getSquare(fromRow, 7);
+                if (rook == null || rook.type != "rook" || rook.hasMoved == true) {
+                    return false;
+                }
+                if (this.board.getSquare(fromRow, fromCol + 1) != null || this.board.getSquare(fromRow, fromCol + 2) != null) {
+                    return false;
+                }
+                if (this.isKingInCheck(piecePosition.color)) {
+                    return false;
+                }
+                for (let i = 1; i <= 2; i++) {
+                    const midCol = fromCol + i;
+
+                    const startPiece = this.board.getSquare(fromRow, fromCol);
+                    const midPiece = this.board.getSquare(fromRow, midCol);
+                    const oldRow = piecePosition.row;
+                    const oldCol = piecePosition.col;
+
+                    let inCheck = false;
+
+                    this.board.setSquare(fromRow, fromCol, null);
+                    this.board.setSquare(fromRow, midCol, piecePosition);
+                    piecePosition.row = fromRow;
+                    piecePosition.col = midCol;
+
+                    inCheck = this.isKingInCheck(piecePosition.color);
+
+                    this.board.setSquare(fromRow, midCol, midPiece);
+                    this.board.setSquare(fromRow, fromCol, startPiece);
+                    piecePosition.row = oldRow;
+                    piecePosition.col = oldCol;
+
+                    if (inCheck) return false;
+                }
+            } if (toCol < fromCol) {
+                let rook = this.board.getSquare(fromRow, 0);
+                if (rook == null || rook.type != "rook" || rook.hasMoved == true) {
+                    return false;
+                }
+                if (this.board.getSquare(fromRow, fromCol - 1) != null || this.board.getSquare(fromRow, fromCol - 2) != null || this.board.getSquare(fromRow, fromCol - 3) != null) {
+                    return false;
+                }
+                if (this.isKingInCheck(piecePosition.color)) {
+                    return false;
+                }
+                for (let i = 1; i <= 2; i++) {
+                    const midCol = fromCol - i;
+
+                    const startPiece = this.board.getSquare(fromRow, fromCol);
+                    const midPiece = this.board.getSquare(fromRow, midCol);
+                    const oldRow = piecePosition.row;
+                    const oldCol = piecePosition.col;
+
+                    let inCheck = false;
+
+                    this.board.setSquare(fromRow, fromCol, null);
+                    this.board.setSquare(fromRow, midCol, piecePosition);
+                    piecePosition.row = fromRow;
+                    piecePosition.col = midCol;
+
+                    inCheck = this.isKingInCheck(piecePosition.color);
+
+                    this.board.setSquare(fromRow, midCol, midPiece);
+                    this.board.setSquare(fromRow, fromCol, startPiece);
+                    piecePosition.row = oldRow;
+                    piecePosition.col = oldCol;
+
+                    if (inCheck) return false;
+                }
+            }
+            return true;
+        }
         this.board.setSquare(toRow, toCol, piecePosition);
         this.board.setSquare(fromRow, fromCol, null);
         piecePosition.row = toRow

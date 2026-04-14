@@ -15,6 +15,10 @@ export class King extends Piece {
             { rowChange: -1, colChange: 1 },
             { rowChange: -1, colChange: -1 },
         ];
+        if (this.hasMoved == false) {
+            validMoves.push({ row: this.row, col: this.col + 2 });
+            validMoves.push({ row: this.row, col: this.col - 2 });
+        }
 
         for (let move of moves) {
             let currentRow = this.row;

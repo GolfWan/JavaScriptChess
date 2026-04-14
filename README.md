@@ -63,7 +63,7 @@ chess-game/
 
 ## Status
 
-**In Entwicklung** - Sprint 7 von 9
+**In Entwicklung** - Sprint 9 von 9
 
 ## Autor
 

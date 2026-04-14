@@ -4,9 +4,10 @@ export class Piece {
         this.color = color;
         this.row = row;
         this.col = col;
+        this.hasMoved = false;
     }
 
-    getValidMoves(board){
+    getValidMoves(board) {
         return [];
     }
 }
