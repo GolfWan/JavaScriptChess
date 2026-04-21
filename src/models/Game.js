@@ -12,6 +12,7 @@ export class Game {
         this.currentPlayer = 'white';
         this.selectedPiece = null;
         this.selectedPosition = null;
+        this.lastMove = { piece: null, fromRow: null, fromCol: null, toRow: null, toCol: null }
     }
 
     initializeBoard() {
@@ -63,6 +64,13 @@ export class Game {
     }
     movePiece(fromRow, fromCol, toRow, toCol) {
         let movingPiece = this.board.getSquare(fromRow, fromCol);
+        this.lastMove = {
+            piece: this.board.getSquare(fromRow, fromCol),
+            fromRow: fromRow,
+            fromCol: fromCol,
+            toRow: toRow,
+            toCol: toCol
+        };
         if (movingPiece.type == "king" && Math.abs(fromCol - toCol) == 2) {
             if (toCol > fromCol) {
                 this.board.setSquare(toRow, toCol, movingPiece);
@@ -97,6 +105,9 @@ export class Game {
         movingPiece.col = toCol;
         this.board.setSquare(toRow, toCol, movingPiece);
         this.board.setSquare(fromRow, fromCol, null);
+        if (movingPiece.type === "pawn" && fromCol !== toCol && this.board.getSquare(toRow, toCol) === null) {
+            this.board.setSquare(fromRow, toCol, null);
+        }
     }
     isKingInCheck(color) {
         let currentKing;
@@ -114,7 +125,7 @@ export class Game {
             for (let y = 0; y <= 7; y++) {
                 let currentPiece = this.board.getSquare(x, y);
                 if (currentPiece != null && currentPiece.color != color) {
-                    if (currentPiece.getValidMoves(this.board).some(validMove => validMove.row == currentKing.row && validMove.col == currentKing.col)) {
+                    if (currentPiece.getValidMoves(this.board, this).some(validMove => validMove.row == currentKing.row && validMove.col == currentKing.col)) {
                         return true;
                     }
                 }
@@ -126,77 +137,47 @@ export class Game {
     isMoveLegal(fromRow, fromCol, toRow, toCol) {
         let piecePosition = this.board.getSquare(fromRow, fromCol);
         let pieceTargetPosition = this.board.getSquare(toRow, toCol);
+        let dir;
+        let rookCol;
         if (piecePosition.type == "king" && fromRow == toRow && Math.abs(fromCol - toCol) == 2 && piecePosition.hasMoved == false) {
             if (toCol > fromCol) {
-                let rook = this.board.getSquare(fromRow, 7);
-                if (rook == null || rook.type != "rook" || rook.hasMoved == true) {
+                dir = 1;
+                rookCol = 7;
+            }
+            if (toCol < fromCol) {
+                dir = -1;
+                rookCol = 0;
+            }
+            let rook = this.board.getSquare(fromRow, rookCol);
+            if (rook == null || rook.type != "rook" || rook.hasMoved == true) {
+                return false;
+            }
+            let currentCol = fromCol + dir;
+            for (currentCol; currentCol != rookCol; currentCol += dir) {
+                if (this.board.getSquare(fromRow, currentCol) != null) {
                     return false;
                 }
-                if (this.board.getSquare(fromRow, fromCol + 1) != null || this.board.getSquare(fromRow, fromCol + 2) != null) {
-                    return false;
-                }
-                if (this.isKingInCheck(piecePosition.color)) {
-                    return false;
-                }
-                for (let i = 1; i <= 2; i++) {
-                    const midCol = fromCol + i;
-
-                    const startPiece = this.board.getSquare(fromRow, fromCol);
-                    const midPiece = this.board.getSquare(fromRow, midCol);
-                    const oldRow = piecePosition.row;
-                    const oldCol = piecePosition.col;
-
-                    let inCheck = false;
-
-                    this.board.setSquare(fromRow, fromCol, null);
-                    this.board.setSquare(fromRow, midCol, piecePosition);
-                    piecePosition.row = fromRow;
-                    piecePosition.col = midCol;
-
-                    inCheck = this.isKingInCheck(piecePosition.color);
-
-                    this.board.setSquare(fromRow, midCol, midPiece);
-                    this.board.setSquare(fromRow, fromCol, startPiece);
-                    piecePosition.row = oldRow;
-                    piecePosition.col = oldCol;
-
-                    if (inCheck) return false;
-                }
-            } if (toCol < fromCol) {
-                let rook = this.board.getSquare(fromRow, 0);
-                if (rook == null || rook.type != "rook" || rook.hasMoved == true) {
-                    return false;
-                }
-                if (this.board.getSquare(fromRow, fromCol - 1) != null || this.board.getSquare(fromRow, fromCol - 2) != null || this.board.getSquare(fromRow, fromCol - 3) != null) {
-                    return false;
-                }
-                if (this.isKingInCheck(piecePosition.color)) {
-                    return false;
-                }
-                for (let i = 1; i <= 2; i++) {
-                    const midCol = fromCol - i;
-
-                    const startPiece = this.board.getSquare(fromRow, fromCol);
-                    const midPiece = this.board.getSquare(fromRow, midCol);
-                    const oldRow = piecePosition.row;
-                    const oldCol = piecePosition.col;
-
-                    let inCheck = false;
-
-                    this.board.setSquare(fromRow, fromCol, null);
-                    this.board.setSquare(fromRow, midCol, piecePosition);
-                    piecePosition.row = fromRow;
-                    piecePosition.col = midCol;
-
-                    inCheck = this.isKingInCheck(piecePosition.color);
-
-                    this.board.setSquare(fromRow, midCol, midPiece);
-                    this.board.setSquare(fromRow, fromCol, startPiece);
-                    piecePosition.row = oldRow;
-                    piecePosition.col = oldCol;
-
-                    if (inCheck) return false;
-                }
+            }
+            if (this.isKingInCheck(piecePosition.color)) {
+                return false;
+            }
+            for (let i = 1; i <= 2; i++) {
+                const midCol = fromCol + dir * i;
+                const startPiece = this.board.getSquare(fromRow, fromCol);
+                const midPiece = this.board.getSquare(fromRow, midCol);
+                const oldRow = piecePosition.row;
+                const oldCol = piecePosition.col;
+                let inCheck = false;
+                this.board.setSquare(fromRow, fromCol, null);
+                this.board.setSquare(fromRow, midCol, piecePosition);
+                piecePosition.row = fromRow;
+                piecePosition.col = midCol;
+                inCheck = this.isKingInCheck(piecePosition.color);
+                this.board.setSquare(fromRow, midCol, midPiece);
+                this.board.setSquare(fromRow, fromCol, startPiece);
+                piecePosition.row = oldRow;
+                piecePosition.col = oldCol;
+                if (inCheck) return false;
             }
             return true;
         }
@@ -219,7 +200,7 @@ export class Game {
         for (let x = 0; x <= 7; x++) {
             for (let y = 0; y <= 7; y++) {
                 if (this.board.getSquare(x, y) != null && this.board.getSquare(x, y).color == this.currentPlayer) {
-                    let validMoves = this.board.getSquare(x, y).getValidMoves(this.board);
+                    let validMoves = this.board.getSquare(x, y).getValidMoves(this.board, this);
                     for (let move of validMoves) {
                         if (this.isMoveLegal(x, y, move.row, move.col)) {
                             return false;
@@ -237,7 +218,7 @@ export class Game {
         for (let x = 0; x <= 7; x++) {
             for (let y = 0; y <= 7; y++) {
                 if (this.board.getSquare(x, y) != null && this.board.getSquare(x, y).color == this.currentPlayer) {
-                    let validMoves = this.board.getSquare(x, y).getValidMoves(this.board);
+                    let validMoves = this.board.getSquare(x, y).getValidMoves(this.board, this);
                     for (let move of validMoves) {
                         if (this.isMoveLegal(x, y, move.row, move.col)) {
                             return false;
@@ -248,7 +229,4 @@ export class Game {
         }
         return true;
     }
-
-
-
 }

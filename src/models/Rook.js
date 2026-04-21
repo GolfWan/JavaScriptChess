@@ -4,7 +4,7 @@ export class Rook extends Piece {
         super("rook", color, row, col);
     }
 
-    getValidMoves(board) {
+    getValidMoves(board, game) {
         let validMoves = [];
         let directions = [
             { rowChange: 1, colChange: 0 }, 

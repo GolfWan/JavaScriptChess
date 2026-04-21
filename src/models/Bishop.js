@@ -5,7 +5,7 @@ export class Bishop extends Piece {
     }
 
 
-    getValidMoves(board) {
+    getValidMoves(board, game) {
         let validMoves = [];
         let directions = [
             { rowChange: 1, colChange: 1 },

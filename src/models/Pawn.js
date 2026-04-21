@@ -4,9 +4,10 @@ export class Pawn extends Piece {
         super("pawn", color, row, col);
     }
 
-    getValidMoves(board) {
+    getValidMoves(board, game) {
         let validMoves = [];
         let direction;
+        let lastMove = game.lastMove;
         switch (this.color) {
             case "white":
                 direction = 1;
@@ -25,7 +26,7 @@ export class Pawn extends Piece {
                 }
             }
         }
-        if (this.row + direction <= 7 && this.row + direction >= 0 && this.col -1 <= 7 && this.col -1 >= 0) {
+        if (this.row + direction <= 7 && this.row + direction >= 0 && this.col - 1 <= 7 && this.col - 1 >= 0) {
             if (board.getSquare(this.row + direction, this.col - 1) != null) {
                 if (board.getSquare(this.row + direction, this.col - 1).color != board.getSquare(this.row, this.col).color) {
                     validMoves.push({ row: this.row + direction, col: this.col - 1 });
@@ -36,6 +37,14 @@ export class Pawn extends Piece {
                     if (board.getSquare(this.row + direction, this.col + 1).color != board.getSquare(this.row, this.col).color) {
                         validMoves.push({ row: this.row + direction, col: this.col + 1 });
                     }
+                }
+            }
+        }
+        if (lastMove && lastMove.piece && lastMove.piece.type === "pawn") {
+            if (Math.abs(lastMove.fromRow - lastMove.toRow) === 2) {
+                if (lastMove.toRow === this.row && Math.abs(lastMove.toCol - this.col) === 1) {
+                    validMoves.push({ row: this.row + direction, col: lastMove.toCol });
+                    board.setSquare(this.row, lastMove.toCol, null);
                 }
             }
         }

@@ -7,7 +7,7 @@ export class Piece {
         this.hasMoved = false;
     }
 
-    getValidMoves(board) {
+    getValidMoves(board, game) {
         return [];
     }
 }

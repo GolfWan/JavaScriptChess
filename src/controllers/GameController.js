@@ -16,7 +16,7 @@ export class GameController {
                 this.game.selectedPiece = this.game.board.getSquare(row, col);
             }
         } else {
-            let validMovesArray = this.game.selectedPiece.getValidMoves(this.game.board);
+            let validMovesArray = this.game.selectedPiece.getValidMoves(this.game.board, this.game);
             if (this.game.selectedPiece == this.game.board.getSquare(row, col)) {
                 this.game.selectedPosition = null;
                 this.game.selectedPiece = null;
@@ -28,11 +28,11 @@ export class GameController {
                     if (this.game.isMoveLegal(this.game.selectedPosition.row, this.game.selectedPosition.col, row, col)) {
                         this.game.movePiece(this.game.selectedPosition.row, this.game.selectedPosition.col, row, col);
                         this.game.switchPlayer();
-                        if (this.game.isPatt(this.game.currentPlayer)) {
-                            alert("Patt");
-                        }
                         if (this.game.isCheckmate(this.game.currentPlayer)) {
                             alert("Schachmatt");
+                        }
+                        if (this.game.isPatt(this.game.currentPlayer)) {
+                            alert("Patt");
                         }
                         this.game.selectedPiece = null;
                         this.game.selectedPosition = null;

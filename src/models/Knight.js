@@ -3,7 +3,7 @@ export class Knight extends Piece {
     constructor(color, row, col) {
         super("knight", color, row, col);
     }
-    getValidMoves(board) {
+    getValidMoves(board, game) {
         let validMoves = [];
         let moves = [
             { rowChange: 2, colChange: 1 },

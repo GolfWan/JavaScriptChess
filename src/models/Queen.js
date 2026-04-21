@@ -4,7 +4,7 @@ export class Queen extends Piece {
         super("queen", color, row, col);
     }
 
-    getValidMoves(board) {
+    getValidMoves(board, game) {
         let validMoves = [];
         let directions = [
             { rowChange: 1, colChange: 1 },
