@@ -76,57 +76,70 @@ export class Game {
     }
 
     movePiece(fromRow, fromCol, toRow, toCol) {
+        const prevLastMove = this.lastMove;
+        const targetBefore = this.board.getSquare(toRow, toCol);
+
         let movingPiece = this.board.getSquare(fromRow, fromCol);
-        this.lastMove = {
-            piece: this.board.getSquare(fromRow, fromCol),
-            fromRow: fromRow,
-            fromCol: fromCol,
-            toRow: toRow,
-            toCol: toCol
-        };
+
         if (movingPiece.type == "king" && Math.abs(fromCol - toCol) == 2) {
             if (toCol > fromCol) {
                 this.board.setSquare(toRow, toCol, movingPiece);
                 this.board.setSquare(fromRow, fromCol, null);
                 movingPiece.col = toCol;
                 movingPiece.row = toRow;
+
                 let rook = this.board.getSquare(fromRow, 7);
                 this.board.setSquare(fromRow, toCol - 1, rook);
                 this.board.setSquare(fromRow, 7, null);
                 rook.col = toCol - 1;
                 rook.row = fromRow;
+
                 movingPiece.hasMoved = true;
                 rook.hasMoved = true;
+
+                this.lastMove = { piece: movingPiece, fromRow, fromCol, toRow, toCol };
                 return;
-            } else if (toCol < fromCol) {
+            } else {
                 this.board.setSquare(toRow, toCol, movingPiece);
                 this.board.setSquare(fromRow, fromCol, null);
                 movingPiece.col = toCol;
                 movingPiece.row = toRow;
+
                 let rook = this.board.getSquare(fromRow, 0);
-                this.board.setSquare(fromRow, toCol + 1, rook)
-                this.board.setSquare(fromRow, 0, null)
+                this.board.setSquare(fromRow, toCol + 1, rook);
+                this.board.setSquare(fromRow, 0, null);
                 rook.col = toCol + 1;
                 rook.row = fromRow;
+
                 movingPiece.hasMoved = true;
                 rook.hasMoved = true;
+
+                this.lastMove = { piece: movingPiece, fromRow, fromCol, toRow, toCol };
                 return;
             }
         }
+
         movingPiece.hasMoved = true;
         movingPiece.row = toRow;
         movingPiece.col = toCol;
         this.board.setSquare(toRow, toCol, movingPiece);
         this.board.setSquare(fromRow, fromCol, null);
-        if (movingPiece.type === "pawn" && fromCol !== toCol && this.board.getSquare(toRow, toCol) === movingPiece) {
-            let direction;
-            if (movingPiece.color === "white") {
-                direction = -1;
-            } else {
-                direction = 1;
-            }
-            this.board.setSquare(toRow + direction, toCol, null);
+
+        if (
+            movingPiece.type === "pawn" &&
+            fromCol !== toCol &&
+            targetBefore == null &&
+            prevLastMove && prevLastMove.piece &&
+            prevLastMove.piece.type === "pawn" &&
+            prevLastMove.piece.color !== movingPiece.color &&
+            Math.abs(prevLastMove.fromRow - prevLastMove.toRow) === 2 &&
+            prevLastMove.toRow === fromRow &&
+            prevLastMove.toCol === toCol
+        ) {
+            this.board.setSquare(fromRow, toCol, null);
         }
+
+        this.lastMove = { piece: movingPiece, fromRow, fromCol, toRow, toCol };
     }
 
     isKingInCheck(color) {
@@ -205,7 +218,7 @@ export class Game {
         this.board.setSquare(fromRow, fromCol, null);
         piecePosition.row = toRow;
         piecePosition.col = toCol;
-        let kingCheck = this.isKingInCheck(this.currentPlayer);
+        let kingCheck = this.isKingInCheck(piecePosition.color);
         this.board.setSquare(fromRow, fromCol, piecePosition);
         this.board.setSquare(toRow, toCol, pieceTargetPosition);
         piecePosition.row = fromRow;
