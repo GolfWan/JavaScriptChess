@@ -44,7 +44,6 @@ export class Pawn extends Piece {
             if (Math.abs(lastMove.fromRow - lastMove.toRow) === 2) {
                 if (lastMove.toRow === this.row && Math.abs(lastMove.toCol - this.col) === 1) {
                     validMoves.push({ row: this.row + direction, col: lastMove.toCol });
-                    board.setSquare(this.row, lastMove.toCol, null);
                 }
             }
         }

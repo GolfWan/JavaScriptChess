@@ -7,11 +7,9 @@ import { Queen } from './Queen.js';
 import { King } from './King.js';
 export class Game {
     constructor() {
-        this.board = new Board()
+        this.board = new Board();
         this.initializeBoard();
         this.currentPlayer = 'white';
-        this.selectedPiece = null;
-        this.selectedPosition = null;
         this.lastMove = { piece: null, fromRow: null, fromCol: null, toRow: null, toCol: null }
     }
 
@@ -55,6 +53,20 @@ export class Game {
             }
         }
     }
+    checkMove(fromRow, fromCol, toRow, toCol) {
+        let piece = this.board.getSquare(fromRow, fromCol);
+        if (piece != null) {
+            let validMovesArray = piece.getValidMoves(this.board, this);
+            if (validMovesArray.some(move => move.row === toRow && move.col === toCol)) {
+                if (this.isMoveLegal(fromRow, fromCol, toRow, toCol)) {
+                    this.movePiece(fromRow, fromCol, toRow, toCol);
+                    this.switchPlayer();
+                    return true;
+                }
+            }
+        }
+    }
+
     switchPlayer() {
         if (this.currentPlayer == "white") {
             this.currentPlayer = "black";
@@ -62,6 +74,7 @@ export class Game {
             this.currentPlayer = "white";
         }
     }
+
     movePiece(fromRow, fromCol, toRow, toCol) {
         let movingPiece = this.board.getSquare(fromRow, fromCol);
         this.lastMove = {
@@ -78,8 +91,8 @@ export class Game {
                 movingPiece.col = toCol;
                 movingPiece.row = toRow;
                 let rook = this.board.getSquare(fromRow, 7);
-                this.board.setSquare(fromRow, toCol - 1, rook)
-                this.board.setSquare(fromRow, 7, null)
+                this.board.setSquare(fromRow, toCol - 1, rook);
+                this.board.setSquare(fromRow, 7, null);
                 rook.col = toCol - 1;
                 rook.row = fromRow;
                 movingPiece.hasMoved = true;
@@ -105,10 +118,17 @@ export class Game {
         movingPiece.col = toCol;
         this.board.setSquare(toRow, toCol, movingPiece);
         this.board.setSquare(fromRow, fromCol, null);
-        if (movingPiece.type === "pawn" && fromCol !== toCol && this.board.getSquare(toRow, toCol) === null) {
-            this.board.setSquare(fromRow, toCol, null);
+        if (movingPiece.type === "pawn" && fromCol !== toCol && this.board.getSquare(toRow, toCol) === movingPiece) {
+            let direction;
+            if (movingPiece.color === "white") {
+                direction = -1;
+            } else {
+                direction = 1;
+            }
+            this.board.setSquare(toRow + direction, toCol, null);
         }
     }
+
     isKingInCheck(color) {
         let currentKing;
         for (let x = 0; x <= 7; x++) {
@@ -129,11 +149,11 @@ export class Game {
                         return true;
                     }
                 }
-
             }
         }
         return false
     }
+
     isMoveLegal(fromRow, fromCol, toRow, toCol) {
         let piecePosition = this.board.getSquare(fromRow, fromCol);
         let pieceTargetPosition = this.board.getSquare(toRow, toCol);
@@ -183,13 +203,13 @@ export class Game {
         }
         this.board.setSquare(toRow, toCol, piecePosition);
         this.board.setSquare(fromRow, fromCol, null);
-        piecePosition.row = toRow
-        piecePosition.col = toCol
+        piecePosition.row = toRow;
+        piecePosition.col = toCol;
         let kingCheck = this.isKingInCheck(this.currentPlayer);
         this.board.setSquare(fromRow, fromCol, piecePosition);
         this.board.setSquare(toRow, toCol, pieceTargetPosition);
-        piecePosition.row = fromRow
-        piecePosition.col = fromCol
+        piecePosition.row = fromRow;
+        piecePosition.col = fromCol;
         return !kingCheck;
     }
 
@@ -211,6 +231,7 @@ export class Game {
         }
         return true;
     }
+
     isPatt(color) {
         if (this.isKingInCheck(this.currentPlayer)) {
             return false;
